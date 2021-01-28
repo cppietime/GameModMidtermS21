@@ -1,0 +1,11 @@
+Backup/
+UpgradeLog.htm
+game.vcxproj
+game.vcxproj.filters
+idlib.vcxproj
+idlib.vcxproj.filters
+ipch/
+mpgame.vcxproj
+mpgame.vcxproj.filters
+q4sdk.sdf
+q4sdk.v12.suo
