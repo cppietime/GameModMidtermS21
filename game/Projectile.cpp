@@ -384,6 +384,10 @@ void idProjectile::Launch( const idVec3 &start, const idVec3 &dir, const idVec3 
 	ieMinPitch					= spawnArgs.GetInt("ieMinPitch","0");
 	ieMaxPitch					= spawnArgs.GetInt("ieMaxPitch","0");
 	ieSlicePercentage			= spawnArgs.GetFloat("ieSlicePercentage","0.0");
+
+	// MOD BEGIN
+	explosionEntity				= spawnArgs.GetString("explosionEntity", "");
+	// MOD END
 	
 	projectileFlags.detonate_on_world	= spawnArgs.GetBool( "detonate_on_world" );
 	projectileFlags.detonate_on_actor	= spawnArgs.GetBool( "detonate_on_actor" );
@@ -1202,7 +1206,22 @@ void idProjectile::Explode( const trace_t *collision, const bool showExplodeFX, 
 	// splash damage
 	removeTime = 0;
 	float delay = spawnArgs.GetFloat( "delay_splash" );
-	if ( delay ) {
+	// MOD BEGIN
+	if (explosionEntity.Length() != 0){
+		const idDict *explosionEntityDict = gameLocal.FindEntityDefDict(explosionEntity);
+		if (explosionEntityDict){
+			
+			idEntity* spawnProjectile = NULL;
+			gameLocal.SpawnEntityDef(*explosionEntityDict, &spawnProjectile);
+			spawnProjectile->SetOrigin(endpos);
+			
+		}
+		else{
+			gameLocal.Warning("Could not find dict for explosion entity %s\n", explosionEntity.c_str());
+		}
+		explosionEntity = "";
+	}
+	else /* MOD END */ if ( delay ) {
 		if ( removeTime < delay * 1000 ) {
 			removeTime = ( delay + 0.10 ) * 1000;
 		}
