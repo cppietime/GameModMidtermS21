@@ -1211,9 +1211,10 @@ void idProjectile::Explode( const trace_t *collision, const bool showExplodeFX, 
 		const idDict *explosionEntityDict = gameLocal.FindEntityDefDict(explosionEntity);
 		if (explosionEntityDict){
 			
-			idEntity* spawnProjectile = NULL;
-			gameLocal.SpawnEntityDef(*explosionEntityDict, &spawnProjectile);
+			idAI* spawnProjectile = NULL;
+			gameLocal.SpawnEntityDef(*explosionEntityDict, (idEntity**)&spawnProjectile);
 			spawnProjectile->SetOrigin(endpos);
+			spawnProjectile->markWave(); // TODO this isn't really a wave entity, I just wanna test this
 			
 		}
 		else{

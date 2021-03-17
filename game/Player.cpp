@@ -1342,6 +1342,12 @@ idPlayer::idPlayer() {
 	teamAmmoRegenPending	= false;
 	teamDoubler			= NULL;		
 	teamDoublerPending		= false;
+
+	// MOD BEGIN
+	exp = 0;
+	level = 0;
+	expPerLvl = 1;
+	// MOD END
 }
 
 /*
@@ -2055,6 +2061,10 @@ void idPlayer::Spawn( void ) {
 //RITUAL END
 
 	itemCosts = static_cast< const idDeclEntityDef * >( declManager->FindType( DECL_ENTITYDEF, "ItemCostConstants", false ) );
+
+	// MOD BEGIN
+	spawnArgs.GetInt("expPerLvl", "5", expPerLvl);
+	// MOD END
 }
 
 /*
@@ -2088,6 +2098,11 @@ void idPlayer::Save( idSaveGame *savefile ) const {
 	savefile->WriteUsercmd( usercmd );
 
 	playerView.Save( savefile );
+
+	// MOD BEGIN
+	savefile->WriteInt(exp);
+	savefile->WriteInt(level);
+	// MOD END
 
 	savefile->WriteBool( noclip );
 	savefile->WriteBool( godmode );
@@ -2350,6 +2365,11 @@ void idPlayer::Restore( idRestoreGame *savefile ) {
 	savefile->ReadUsercmd( usercmd );
 
 	playerView.Restore( savefile );
+
+	// MOD BEGIN
+	savefile->ReadInt(exp);
+	savefile->ReadInt(level);
+	// MOD END
 
 	savefile->ReadBool( noclip );
 	savefile->ReadBool( godmode );
@@ -3554,6 +3574,11 @@ void idPlayer::UpdateHudWeapon( int displayWeapon ) {
 		ResetHUDWeaponSwitch();
 	}
 #endif
+
+	// MOD BEGIN
+	hud->SetStateInt("player_exp", exp % expPerLvl);
+	hud->SetStateInt("player_lvl", level);
+	// MOD END
 }
 
 /*
@@ -9283,6 +9308,11 @@ Called every tic for each player
 ==============
 */
 void idPlayer::Think( void ) {
+
+	// This will pollute the fuck out of the console
+	//idVec3 position = physicsObj.GetOrigin();
+	//gameLocal.Printf("At %f,%f,%f\n", position.x, position.y, position.z);
+
 	renderEntity_t *headRenderEnt;
  
 	if ( talkingNPC ) {
@@ -14078,3 +14108,33 @@ int idPlayer::CanSelectWeapon(const char* weaponName)
 }
 
 // RITUAL END
+
+// MOD BEGIN
+
+void
+idPlayer::GainExp(int deltaExp)
+{
+	exp += deltaExp;
+	gameLocal.Printf("Exp raised to %d\n", exp);
+	if (exp >= (level + 1) * expPerLvl){
+		level = exp / expPerLvl;
+		const char *key = va("reward_lvl_%d", level);
+		const char *value = spawnArgs.GetString(key, "");
+		gameLocal.Printf("Key %s holds value %s on level %d\n", key, value, level);
+		if (value[0]) {
+			gameLocal.Printf("Giving myself %s\n", value);
+			GiveStuffToPlayer(this, value, NULL);
+		}
+		gameLocal.Printf("Level raised to %d\n", level);
+	}
+	hud->SetStateInt("player_exp", exp % expPerLvl);
+	hud->SetStateInt("player_lvl", level);
+}
+
+int
+idPlayer::GetLevel()
+{
+	return level;
+}
+
+// MOD END

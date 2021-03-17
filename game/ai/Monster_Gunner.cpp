@@ -21,6 +21,8 @@ public:
 
 	virtual bool		Pain							( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location );
 
+	virtual void		Upgrade(); // MOD
+
 protected:
 
 	int					shots;
@@ -445,4 +447,13 @@ stateResult_t rvMonsterGunner::State_Torso_NailgunAttack ( const stateParms_t& p
 			return SRESULT_WAIT;				
 	}
 	return SRESULT_ERROR; 
+}
+
+// MOD BEGIN
+
+void rvMonsterGunner::Upgrade()
+{
+	idAI::Upgrade();
+	actionGrenadeAttack.Upgrade();
+	actionNailgunAttack.Upgrade();
 }

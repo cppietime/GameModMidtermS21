@@ -29,6 +29,8 @@ public:
 
 	virtual void			GetDebugInfo				( debugInfoProc_t proc, void* userData );
 
+	virtual void			Upgrade(); // MOD
+
 protected:
 
 	int						shots;
@@ -234,6 +236,7 @@ rvMonsterConvoyGround::AdjustHealthByDamage
 ================
 */
 void rvMonsterConvoyGround::AdjustHealthByDamage ( int damage ) {
+	isOpen = false;
 	if ( isOpen || vehicleCollision ) {
 		idAI::AdjustHealthByDamage ( damage );
 	} else { 
@@ -601,3 +604,9 @@ stateResult_t rvMonsterConvoyGround::State_Legs_Move ( const stateParms_t& parms
 	return SRESULT_ERROR;
 }
 
+// MOD BEGIN
+
+void rvMonsterConvoyGround::Upgrade()
+{
+	idAI::Upgrade();
+}

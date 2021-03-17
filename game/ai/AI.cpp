@@ -42,6 +42,14 @@ idAI::idAI
 =====================
 */
 idAI::idAI ( void ) {
+
+	// MOD BEGIN
+	pathState = 0;
+	age = gameLocal.time;
+	isWave = false;
+	dummyDamage = 0;
+	// MOD END
+
 	projectile_height_to_distance_ratio = 1.0f;
 
 	aas						= NULL;
@@ -351,6 +359,10 @@ void idAI::Save( idSaveGame *savefile ) const {
 	actionMeleeAttack.Save ( savefile );
 	actionLeapAttack.Save ( savefile );
 	actionJumpBack.Save ( savefile );
+
+	// MOD BEGIN
+	savefile->WriteInt(baseLevel);
+	// MOD END
 }
 
 /*
@@ -560,6 +572,10 @@ void idAI::Restore( idRestoreGame *savefile ) {
 	actionMeleeAttack.Restore ( savefile );
 	actionLeapAttack.Restore ( savefile );
 	actionJumpBack.Restore ( savefile );
+
+	// MOD BEGIN
+	savefile->ReadInt(baseLevel);
+	// MOD END
 
 	// Set the AAS if the character has the correct gravity vector
 	idVec3 gravity = spawnArgs.GetVector( "gravityDir", "0 0 -1" );
@@ -877,6 +893,11 @@ void idAI::Spawn( void ) {
 		gameLocal.Warning( "Unhidden AI placed in map (will be constantly active): %s (%s)", name.c_str(), GetPhysics()->GetOrigin().ToString() );
 	}
 
+	// MOD BEGIN
+	spawnArgs.GetInt("dummyDamage", "0", dummyDamage);
+	baseLevel = gameLocal.GetLocalPlayer()->GetLevel();
+	// MOD END
+
 	Begin ( );
 
 	// RAVEN BEGIN
@@ -1136,6 +1157,24 @@ idAI::Think
 =====================
 */
 void idAI::Think( void ) {
+
+	// MOD BEGIN
+	//if (team == 1 && isWave) {
+	//	if (gameLocal.time - age > 1000 * 2) {
+	//		age = gameLocal.time;
+	//		pathState++;
+	//		if (pathState == 4){
+	//			AdjustHealthByDamage(health);
+	//			gameLocal.GetLocalPlayer()->AdjustHealthByDamage(5); // TODO figure out how to limit this to wave enemies
+	//			Killed(this, this, health, idVec3(0, 0, 0), 0);
+	//		}
+	//	}
+	//}
+	if (team == 0 && baseLevel != gameLocal.GetLocalPlayer()->GetLevel()) {
+		baseLevel = gameLocal.GetLocalPlayer()->GetLevel();
+		Upgrade();
+	}
+	// MOD END
 
 	// if we are completely closed off from the player, don't do anything at all
 	if ( CheckDormant() ) {
@@ -1809,6 +1848,14 @@ idAI::TalkTo
 =====================
 */
 void idAI::TalkTo( idActor *actor ) {
+
+	gameLocal.Printf("Interacting\n");
+
+	if (team == TEAM_MARINE) {
+		gameLocal.GetLocalPlayer()->GainExp(1);
+		Killed(this, this, 100000, idVec3(0, 0, 0), 0);
+		gameLocal.Printf("Recycled Tower\n");
+	}
 
 	// jshepard: the dead do not speak.
 	if ( aifl.dead )
@@ -3698,6 +3745,15 @@ void idAI::OnDeath( void ){
 		}
 	}
 */
+
+	// MOD BEGIN
+	if (team == 1) {
+		if (dummyDamage == 0)
+			gameLocal.GetLocalPlayer()->GainExp(1);
+		else
+			gameLocal.GetLocalPlayer()->AdjustHealthByDamage(dummyDamage);
+	}
+	// MOD END
 }
 
 /*
@@ -5148,4 +5204,13 @@ bool idAI::CheckDeathCausesMissionFailure( void )
 		}
 	}
 	return false;
+}
+
+// MOD BEGIN
+
+void idAI::Upgrade()
+{
+	actionLeapAttack.Upgrade();
+	actionRangedAttack.Upgrade();
+	actionMeleeAttack.Upgrade();
 }

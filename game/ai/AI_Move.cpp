@@ -1191,12 +1191,14 @@ bool idAI::MoveTo ( const idVec3 &pos, float range ) {
 	org     = pos;
 	areaNum = PointReachableAreaNum( org );
 	if ( !areaNum ) {
+		gameLocal.Printf("Unreachable\n");
 		return false;
 	}
 
 	// Can we get to where we want to go?
 	aas->PushPointIntoAreaNum( areaNum, org );
 	if ( !PathToGoal( path, areaNum, physicsObj.GetOrigin(), PointReachableAreaNum( physicsObj.GetOrigin() ), org ) ) {
+		gameLocal.Printf("No path\n");
 		return false;
 	}
 	

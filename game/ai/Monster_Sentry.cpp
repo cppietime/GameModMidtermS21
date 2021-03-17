@@ -23,6 +23,8 @@ public:
 	// Add some dynamic externals for debugging
 	virtual void		GetDebugInfo		( debugInfoProc_t proc, void* userData );
 
+	virtual void		Upgrade(); //MOD
+
 protected:
 
 	rvAIAction			actionBlasterAttack;
@@ -409,4 +411,12 @@ stateResult_t rvMonsterSentry::State_Torso_EvadeRight ( const stateParms_t& parm
 		GetPhysics()->SetLinearVelocity( vel );
 	}
 	return SRESULT_DONE;
+}
+// MOD BEGIN
+
+void rvMonsterSentry::Upgrade()
+{
+	idAI::Upgrade();
+	actionKamakaziAttack.Upgrade();
+	actionBlasterAttack.Upgrade();
 }

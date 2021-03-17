@@ -250,6 +250,10 @@ public:
 
 	int		GetTime			( void ) const;
 	int		GetRate			( void ) const;
+
+	// MOD BEGIN
+	void	Upgrade(void);
+	// MOD END
 		
 protected:
 
@@ -271,7 +275,11 @@ ID_INLINE int rvAIActionTimer::GetRate ( void ) const {
 class rvAIAction {
 public:
 
-	rvAIAction ( void );
+	rvAIAction(void);
+
+	// MOD BEGIN
+	void	Upgrade(void);
+	// MOD END
 	
 	bool	Init			( const idDict& args, const char* name, const char* defaultState, int flags );
 
@@ -458,6 +466,11 @@ public:
 
 	idActor*				GetLeader						( void ) const;
 
+	// MOD BEGIN
+	void					markWave(void) { isWave = true; }
+	virtual void			Upgrade(void);
+	// MOD END
+
 							// Outputs a list of all monsters to the console.
 	static void				List_f( const idCmdArgs &args );
 
@@ -480,6 +493,14 @@ public:
 
 
 public:
+
+	// MOD BEGIN
+	int						pathState;
+	int						age;
+	bool					isWave;
+	int						dummyDamage;
+	int						baseLevel;
+	// MOD END
 
 	idLinkList<idAI>		simpleThinkNode;
 

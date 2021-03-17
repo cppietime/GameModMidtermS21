@@ -1684,7 +1684,25 @@ bool idAI::UpdateTactical ( int delay ) {
 	return result;
 }
 
-bool idAI::UpdateTactical_r ( void ) {
+bool idAI::UpdateTactical_r(void) {
+	// MOD BEGIN
+	/*if (team == 1) {
+		idVec3 origin = GetPhysics()->GetOrigin();
+		idVec3 targetPos(origin.x, origin.y, origin.z);
+		float delta = 10.0f;
+		switch (pathState){
+		case 0:
+			targetPos.x += delta; break;
+		case 1:
+			targetPos.z += delta; break;
+		case 2:
+			targetPos.x -= delta; break;
+		case 3:
+			targetPos.z -= delta; break;
+		}
+		return MoveTo(targetPos);
+	}*/
+	// MOD END
 	// Mapping of tactical types to combat states
 	static const char* tacticalState [ ] = { 
 		"State_Combat",				// AITACTICAL_NONE

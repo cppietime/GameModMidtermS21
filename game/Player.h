@@ -413,6 +413,17 @@ public:
 	bool					vsMsgState;
 
 	int						lastPickupTime;
+
+
+	// MOD BEGIN
+
+	int						exp;
+	int						level;
+	int						expPerLvl;
+
+	// MOD END
+
+
 //RAVEN BEGIN
 // asalmon: the eneny the player is most likely currently aiming at
 #ifdef _XBOX
@@ -795,6 +806,11 @@ public:
 	void					SetCash( float newCashAmount );
 	void					ResetCash();
 // RITUAL END
+
+	// MOD BEGIN
+	void					GainExp(int deltaExp); // Add exp to the player, and level up if appropriate
+	int						GetLevel();
+	// MOD END
 
 protected:
 	void					SetupHead( const char* modelKeyName = "", idVec3 headOffset = idVec3(0, 0, 0) );

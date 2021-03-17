@@ -17,6 +17,8 @@ public:
 	
 	virtual void		AdjustHealthByDamage	( int damage );
 
+	virtual void Upgrade();
+
 protected:
 
 	rvAIAction			actionMeleeMoveAttack;
@@ -315,4 +317,11 @@ stateResult_t rvMonsterGrunt::State_Torso_LeapAttack ( const stateParms_t& parms
 			return SRESULT_WAIT;
 	}
 	return SRESULT_ERROR;
+}
+
+// MOD BEGIN
+
+void rvMonsterGrunt::Upgrade(){
+	idAI::Upgrade();
+	actionChaingunAttack.Upgrade();
 }
