@@ -21,6 +21,9 @@ public:
 	virtual void		GetDebugInfo					( debugInfoProc_t proc, void* userData );
 
 	virtual bool		Pain							( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location );
+
+	virtual void		Upgrade(); //  MOD
+
 protected:
 
 	virtual bool		CheckPainActions				( void );
@@ -462,4 +465,13 @@ stateResult_t rvMonsterBerserker::Frame_DoBlastAttack ( const stateParms_t& parm
 	}
 	
 	return SRESULT_OK;
+}
+
+// MOD BEGIN
+
+void rvMonsterBerserker::Upgrade()
+{
+	idAI::Upgrade();
+	actionPopupAttack.Upgrade();
+	actionChargeAttack.Upgrade();
 }

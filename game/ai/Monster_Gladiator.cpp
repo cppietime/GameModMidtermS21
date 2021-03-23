@@ -30,6 +30,8 @@ public:
 
 	virtual int				GetDamageForLocation( int damage, int location );
 
+	virtual void			Upgrade(); // MOD
+
 //	virtual void			SetTether			( rvAITether* newTether );
 
 protected:
@@ -900,3 +902,11 @@ stateResult_t rvMonsterGladiator::State_Torso_ShieldFire ( const stateParms_t& p
 	}
 	return SRESULT_ERROR;
 }
+// MOD BEGIN
+
+void rvMonsterGladiator::Upgrade()
+{
+	idAI::Upgrade();
+	actionRailgunAttack.Upgrade();
+}
+

@@ -21,6 +21,8 @@ public:
 
 	virtual int			FilterTactical		( int availableTactical );
 
+	virtual void		Upgrade(); // MOD
+
 protected:
 
 	int					phaseTime;
@@ -529,3 +531,11 @@ stateResult_t rvMonsterIronMaiden::Frame_EndBansheeAttack ( const stateParms_t& 
 	StopEffect ( "fx_banshee" );
 	return SRESULT_OK;
 }
+// MOD BEGIN
+
+void rvMonsterIronMaiden::Upgrade()
+{
+	idAI::Upgrade();
+	actionBansheeAttack.Upgrade();
+}
+

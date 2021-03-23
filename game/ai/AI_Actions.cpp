@@ -590,3 +590,15 @@ bool idAI::PerformAction ( rvAIAction* action, bool (idAI::*condition)(rvAIActio
 	     	
 	return true;
 }
+
+// MOD BEGIN
+void rvAIAction::Upgrade()
+{
+	timer.Upgrade();
+}
+
+void rvAIActionTimer::Upgrade()
+{
+	rate = (rate + 1) / 2;
+}
+// MOD END
